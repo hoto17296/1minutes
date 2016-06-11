@@ -1,8 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import RaisedButton from 'material-ui/RaisedButton';
+import RaisedButton from 'material-ui/RaisedButton'
+import marked from 'marked'
 
 const realtimeUtils = new utils.RealtimeUtils({ clientId: process.env.GOOGLE_CLIENT_ID });
+
+const RENDER_DEDLAY = 1000; // ms
 
 class Edit extends React.Component {
   constructor(props) {
@@ -12,6 +15,8 @@ class Edit extends React.Component {
       id: null,
       loading: true,
       showAuthButton: false,
+      delayTimerId: null,
+      html: '',
     };
   }
 
@@ -28,7 +33,8 @@ class Edit extends React.Component {
     }
     return (
       <main>
-        <textarea ref='text'></textarea>
+        <textarea ref='text' onChange={this.textChanged.bind(this)}></textarea>
+        <div dangerouslySetInnerHTML={{ __html: this.state.html }} />
       </main>
     );
   }
@@ -72,10 +78,13 @@ class Edit extends React.Component {
   // After a file has been initialized and loaded, we can access the
   // document. We will wire up the data model to the UI.
   onFileLoaded(doc) {
-    var collaborativeString = doc.getModel().getRoot().get('text');
+    var Model = doc.getModel();
+    var collaborativeString = Model.getRoot().get('text');
+    Model.getRoot().addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, this.textChanged.bind(this));
     this.setState({
       loading: false,
-      showAuthButton: false
+      showAuthButton: false,
+      html: marked( collaborativeString.getText() ),
     }, () => this.wireTextBoxes(collaborativeString));
   }
 
@@ -83,6 +92,17 @@ class Edit extends React.Component {
   wireTextBoxes(collaborativeString) {
     var textNode = ReactDOM.findDOMNode( this.refs.text );
     gapi.drive.realtime.databinding.bindString(collaborativeString, textNode);
+  }
+
+  textChanged(event) {
+    if ( this.state.delayTimerId ) {
+      window.clearTimeout( this.state.delayTimerId );
+    }
+    var timerId = window.setTimeout(() => {
+      var text = ReactDOM.findDOMNode( this.refs.text ).value;
+      this.setState({ delayTimerId: null, html: marked(text) });
+    }, RENDER_DEDLAY);
+    this.setState({ delayTimerId: timerId });
   }
 
 }
