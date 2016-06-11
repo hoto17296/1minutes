@@ -2,6 +2,7 @@ require('dotenv').config({ silent: true });
 
 var webpack = require('webpack');
 var CompressionPlugin = require('compression-webpack-plugin');
+var path = require('path');
 
 var config = {
   context: __dirname + '/src',
@@ -25,6 +26,10 @@ var config = {
         loaders: ['style', 'css', 'sass'],
       },
     ]
+  },
+  resolve: {
+    modulesDirectories: ['node_modules', 'src/js'],
+    extensions: ['', '.js', '.jsx'],
   },
   plugins: [
     new webpack.DefinePlugin({

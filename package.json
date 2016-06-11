@@ -13,9 +13,11 @@
   "author": "hoto17296",
   "dependencies": {
     "dotenv": "^2.0.0",
+    "flux": "^2.1.1",
     "material-ui": "^0.15.0",
     "react": "^15.1.0",
-    "react-dom": "^15.1.0"
+    "react-dom": "^15.1.0",
+    "react-tap-event-plugin": "^1.0.0"
   },
   "devDependencies": {
     "babel-loader": "^6.2.4",
