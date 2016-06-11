@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import RaisedButton from 'material-ui/RaisedButton'
 import marked from 'marked'
 
 const realtimeUtils = new utils.RealtimeUtils({ clientId: process.env.GOOGLE_CLIENT_ID });
@@ -28,7 +27,9 @@ class Edit extends React.Component {
     if ( this.state.showAuthButton ) {
       return (
         <main>
-          <RaisedButton label="Authorize" primary onClick={this.authorize.bind(this)} />
+          <button type='button' onClick={this.authorize.bind(this)}>
+            Authorize
+          </button>
         </main>
       );
     }
