@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "webpack-dev-server -d --content-base public",
-    "build": "NODE_ENV=production webpack"
+    "build": "NODE_ENV=production webpack",
+    "deploy": "npm run build & gh-pages -d public"
   },
   "author": "hoto17296",
   "dependencies": {
@@ -26,6 +27,7 @@
     "babel-preset-react": "^6.5.0",
     "compression-webpack-plugin": "^0.3.1",
     "css-loader": "^0.23.1",
+    "gh-pages": "^0.11.0",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1",
