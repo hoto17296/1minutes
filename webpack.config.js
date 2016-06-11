@@ -1,4 +1,5 @@
-require('dotenv').config({ silent: true });
+const envfile = __dirname + '/.env.' + ( process.env.NODE_ENV === 'production' ? 'production' : 'development' );
+require('dotenv').config({ path: envfile });
 
 var webpack = require('webpack');
 var CompressionPlugin = require('compression-webpack-plugin');
@@ -33,9 +34,8 @@ var config = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {
-        GOOGLE_CLIENT_ID: JSON.stringify( process.env.GOOGLE_CLIENT_ID ),
-      },
+      'process.env.NODE_ENV':         JSON.stringify( process.env.NODE_ENV ),
+      'process.env.GOOGLE_CLIENT_ID': JSON.stringify( process.env.GOOGLE_CLIENT_ID ),
     }),
   ],
 };
