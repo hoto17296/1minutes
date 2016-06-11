@@ -17,6 +17,7 @@ class Edit extends React.Component {
       showAuthButton: false,
       delayTimerId: null,
       html: '',
+      collaborators: [],
     };
   }
 
@@ -33,6 +34,13 @@ class Edit extends React.Component {
     }
     return (
       <main>
+        <ul>
+          {
+            this.state.collaborators.map((collaborator) => (
+              <li key={collaborator.userId}>{collaborator.displayName}</li>
+            ))
+          }
+        </ul>
         <textarea ref='text' onChange={this.textChanged.bind(this)}></textarea>
         <div dangerouslySetInnerHTML={{ __html: this.state.html }} />
       </main>
@@ -85,7 +93,16 @@ class Edit extends React.Component {
       loading: false,
       showAuthButton: false,
       html: marked( collaborativeString.getText() ),
+      collaborators: doc.getCollaborators(),
     }, () => this.wireTextBoxes(collaborativeString));
+
+    // 参加者が増減したときの処理
+    doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_JOINED, (event) => {
+      this.setState({ collaborators: this.state.collaborators.concat( event.collaborator ) });
+    });
+    doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_LEFT, (event) => {
+      this.setState({ collaborators: this.state.collaborators.filter((c) => c.userId !== event.collaborator.userId) });
+    });
   }
 
   // Connects the text boxes to the collaborative string
